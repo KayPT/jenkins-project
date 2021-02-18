@@ -30,7 +30,8 @@ pipeline {
         stage ('Build Docker Image') {
                 agent any
                 steps {
-                        sh 'docker build -t "${DOCKER_IMAGE_NAME}"  -v /var/run/docker.sock:/var/run/docker.sock -v jenkins_home:/var/jenkins_home jenkins/jenkins:lts .'
+                        sh '-v /var/run/docker.sock:/var/run/docker.sock'
+                        sh 'docker build -t "${DOCKER_IMAGE_NAME}" .'
                 }
             }
     // Inicia o container
