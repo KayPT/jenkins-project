@@ -18,13 +18,13 @@ pipeline {
         }
 
     // Remove a imagem e container anterior
-        stage('Remove Previous Image and Container') {
+    /*   stage('Remove Previous Image and Container') {
             steps {
                 sh 'docker rm --force "$CONTAINER_NAME"'
                 sh 'docker rmi --force "$IMAGE_NAME"'
 
             }
-        }
+        }*/
 
     // Criar a imagem docker
         stage ('Build Docker Image') {
