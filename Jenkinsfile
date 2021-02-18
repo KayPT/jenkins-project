@@ -4,6 +4,7 @@ pipeline {
         parameters { 
         string(name: 'DOCKER_IMAGE_NAME', defaultValue: 'nodejs', description: 'Docker Image')
         string(name: 'DOCKER_CONTAINER_NAME', defaultValue: 'nodejs', description: 'Docker Container Name')
+        string(name: 'DOCKER_PORT', defaultValue: '3000', description: 'Docker Port')
 
     }
 
@@ -38,7 +39,7 @@ pipeline {
                 agent any
                 steps {
                     sh 'docker rm -f "${DOCKER_IMAGE_NAME}"'
-                    sh 'docker run -d -p 3000:3000 --name "${DOCKER_CONTAINER_NAME}" "${DOCKER_IMAGE_NAME}"'
+                    sh 'docker run -d -p ${DOCKER_PORT}:3000 --name "${DOCKER_CONTAINER_NAME}" "${DOCKER_IMAGE_NAME}"'
                 }
             }
         }
