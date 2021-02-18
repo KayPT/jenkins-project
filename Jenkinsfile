@@ -1,45 +1,36 @@
 pipeline {
     agent any
 
-    parameters {
-            String( name: 'FILE_NAME', defaultValue: 'myfile.txt', description: 'File name to archive?')
+        parameters { 
+        string(name: 'DOCKER_IMAGE_NAME', defaultValue: 'nodejs', description: 'Docker Image')
+        string(name: 'DOCKER_CONTAINER_NAME', defaultValue: 'nodejs', description: 'Docker Container Name')
+        
     }
 
-    environment {
-        FILE_NAME = 'NewFile.txt'
-    }
-    
+    // Apaga os dados do Workspace usando o plugin Workspace Cleanup Plugin
     stages {
-        stage('Parallel') {
-        parallel{
-            stage('A') {
+        stage ('CleanResources') {
+            agent any
+            steps
+            {
+                cleanWs()
+            }
+        }
+    // Criar a imagem docker
+        stage ('Build Docker Image') {
                 agent any
                 steps {
-                    echo "On Stage A"
+                        sh 'docker build -t "${DOCKER_IMAGE_NAME}" .'
                 }
             }
-            stage('B') {
+    // Inicia o container
+            stage ('Run Docker Container') {
                 agent any
                 steps {
-                    echo "On Stage B"
+                    sh 'docker run --detach --publish=3000:3000 '
+                    sh 'docker rm -f '
+                    sh 'docker run -d -p 3000:3000 --name "${DOCKER_CONTAINER_NAME}" "${DOCKER_IMAGE_NAME}"'
                 }
             }
-        }
-    }
-        stage('Echo Hello World') {
-            steps {
-                echo 'Hello World'
-             }
-        }
-        stage('create write file') {
-            steps {
-                writeFile file: '$FILE_NAME', text: 'hell write file'
-            }
-        }
-        stage('Archive Artifact write File') {
-            steps {
-                archiveArtifacts artifacts: '$FILE_NAME', followSymlinks: false
-                }
-             }
         }
     }
