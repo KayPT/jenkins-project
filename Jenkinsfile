@@ -30,6 +30,7 @@ pipeline {
         stage ('Build Docker Image') {
                 agent any
                 steps {
+                        sh '-v $(which docker):/usr/bin/docker'
                         sh 'docker build -t "${DOCKER_IMAGE_NAME}" .'
                 }
             }
